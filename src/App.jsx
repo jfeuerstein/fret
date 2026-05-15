@@ -145,7 +145,7 @@ export function App() {
   const profile = useStore(s => s.profile);
   return (
     <div style={{ maxWidth: 460, margin: '0 auto', minHeight: '100vh', background: c.bg, color: c.fg }}>
-      {!profile ? <Onboarding/> : <Today/>}
+      {!profile ? <Onboarding/> : <TapeApp/>}
     </div>
   );
 }
