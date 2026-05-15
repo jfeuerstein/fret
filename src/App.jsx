@@ -9,6 +9,7 @@ import {
   generateWeek,
 } from "./generator.js";
 import { usePush } from "./usePush.js";
+import { TapeApp } from "./TapeApp.jsx";
 
 const c = {
   bg: "#0a0a0a",
