@@ -1,6 +1,7 @@
 # fret · production scaffold
 
-vite + react + service-worker pwa, deployable to vercel with web push.
+vite + react + service-worker pwa, deployable to vercel with
+web push.
 
 ## quick start
 
@@ -18,7 +19,9 @@ vercel               # link the project
 vercel --prod        # ship it
 ```
 
-GitHub integration (recommended): import the repo at vercel.com → every push to `main` auto-deploys, branches get preview URLs.
+GitHub integration (recommended): import the repo at
+vercel.com → every push to `main` auto-deploys, branches get
+preview URLs.
 
 ## install to homescreen
 
@@ -26,9 +29,11 @@ once on https (vercel gives this free):
 
 - **iOS safari** — share sheet → "add to home screen"
 - **android chrome** — auto-prompts, or menu → "install app"
-- **desktop chrome** — install icon in url bar, or trigger via `beforeinstallprompt`
+- **desktop chrome** — install icon in url bar, or trigger
+  via `beforeinstallprompt`
 
-the manifest, icons, and service worker are already wired by `vite-plugin-pwa`.
+the manifest, icons, and service worker are already wired by
+`vite-plugin-pwa`.
 
 ## push notifications
 
@@ -44,32 +49,43 @@ copy both keys.
 
 dashboard → project → settings → environment variables:
 
-| name                       | value                  | scope                   |
-|----------------------------|------------------------|-------------------------|
-| `VITE_VAPID_PUBLIC_KEY`    | public key (base64url) | production, preview, dev|
-| `VAPID_PRIVATE_KEY`        | private key            | production, preview     |
-| `VAPID_SUBJECT`            | mailto:you@example.com | all                     |
+| name                    | value                  | scope                    |
+| ----------------------- | ---------------------- | ------------------------ |
+| `VITE_VAPID_PUBLIC_KEY` | public key (base64url) | production, preview, dev |
+| `VAPID_PRIVATE_KEY`     | private key            | production, preview      |
+| `VAPID_SUBJECT`         | mailto:you@example.com | all                      |
 
-> the `VITE_` prefix exposes a var to the client bundle. **never** prefix the private key.
+> the `VITE_` prefix exposes a var to the client bundle.
+> **never** prefix the private key.
 
 ### 3. add storage
 
-vercel dashboard → storage → create kv (upstash redis). it auto-injects `KV_*` env vars. that's it — `@vercel/kv` reads them at runtime.
+vercel dashboard → storage → create kv (upstash redis). it
+auto-injects `KV_*` env vars. that's it — `@vercel/kv` reads
+them at runtime.
 
 ### 4. enable reminders
 
-the in-app "🔔 enable reminders" button calls `usePush().subscribe()`, which:
+the in-app "🔔 enable reminders" button calls
+`usePush().subscribe()`, which:
+
 - requests permission
 - subscribes via `pushManager.subscribe`
 - POSTs the subscription to `/api/subscribe`
 
 ### 5. daily cron
 
-`vercel.json` registers a cron at 18:00 UTC daily that hits `/api/cron-remind`. that route fans out a random nudge to every saved subscription via `web-push`. tune the time + cadence there.
+`vercel.json` registers a cron at 18:00 UTC daily that hits
+`/api/cron-remind`. that route fans out a random nudge to
+every saved subscription via `web-push`. tune the time +
+cadence there.
 
 ## ios push gotcha
 
-apple only delivers web push to PWAs that the user has **added to their homescreen first** (iOS 16.4+). regular safari tabs don't get push. android & desktop work either way.
+apple only delivers web push to PWAs that the user has
+**added to their homescreen first** (iOS 16.4+). regular
+safari tabs don't get push. android & desktop work either
+way.
 
 ## file map
 
@@ -94,20 +110,30 @@ vercel.json             cron schedule
 
 ## porting the prototype ui
 
-the parent folder has the full prototype (tape, session, tuner, library, week, journal). to bring those screens in:
+the parent folder has the full prototype (tape, session,
+tuner, library, week, journal). to bring those screens in:
 
-1. copy `tape.jsx`, `screens.jsx`, `wireframe.jsx`, `ios-frame.jsx` → `src/components/`
+1. copy `tape.jsx`, `screens.jsx`, `wireframe.jsx`,
+   `ios-frame.jsx` → `src/components/`
 2. for each file, replace:
-   - `const { useState, useEffect } = React;` → `import { useState, useEffect } from 'react';`
+   - `const { useState, useEffect } = React;` →
+     `import { useState, useEffect } from 'react';`
    - `window.Store` → `import { Store } from '../store.js';`
-   - `window.Routine.generateSession(...)` → `import { generateSession } from '../generator.js';`
-   - `window.CHORDS / TABS / BACKING / GUITAR_STRINGS` → `import { CHORDS, TABS, BACKING, GUITAR_STRINGS } from '../content.js';`
-   - `window.audio.metronome / tuner / drone` → `import { metronome, tuner, drone } from '../audio.js';`
-   - `window.fmtTime / freqToNote` → `import { fmtTime, freqToNote } from '../content.js';`
-   - the bottom `window.TapeApp = TapeApp;` line → `export { TapeApp };`
-3. swap `App.jsx` to render `<TapeApp/>` instead of the demo `<Today/>`.
+   - `window.Routine.generateSession(...)` →
+     `import { generateSession } from '../generator.js';`
+   - `window.CHORDS / TABS / BACKING / GUITAR_STRINGS` →
+     `import { CHORDS, TABS, BACKING, GUITAR_STRINGS } from '../content.js';`
+   - `window.audio.metronome / tuner / drone` →
+     `import { metronome, tuner, drone } from '../audio.js';`
+   - `window.fmtTime / freqToNote` →
+     `import { fmtTime, freqToNote } from '../content.js';`
+   - the bottom `window.TapeApp = TapeApp;` line →
+     `export { TapeApp };`
+3. swap `App.jsx` to render `<TapeApp/>` instead of the demo
+   `<Today/>`.
 
-the audio + state APIs in `src/` are 1:1 with the originals — only the access pattern changes.
+the audio + state APIs in `src/` are 1:1 with the originals
+— only the access pattern changes.
 
 ## env example
 
@@ -121,4 +147,5 @@ cp .env.example .env.local
 - auth (clerk or supabase) → sync across devices
 - sentry for error tracking
 - migrate kv → vercel postgres when sharing/social lands
-- expo react native shell that reuses store + generator + content
+- expo react native shell that reuses store + generator +
+  content
