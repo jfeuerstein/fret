@@ -12,6 +12,8 @@ import { generateDeck } from "../quiz/cards.js";
 import { newCard, pickQueue, review } from "../quiz/srs.js";
 import { Btn, Header, Reels, Section, knobBtn, transport } from "../components/atoms.jsx";
 import { markPracticed } from "../usePush.js";
+import { useWakeLock } from "../hooks/useWakeLock.js";
+import { haptics } from "../haptics.js";
 import { baseFont, c, screenStyle, todayDayKey, todayKey } from "../theme.js";
 
 export function SessionScreen({ onComplete }) {
@@ -42,6 +44,10 @@ export function SessionScreen({ onComplete }) {
   const [elapsed, setElapsed] = useState(0);
   const [beat, setBeat] = useState(-1);
   const [droning, setDroning] = useState(false);
+
+  // keep the screen on for the entire session (not just while playing —
+  // you want to read the next block without the lock screen kicking in).
+  useWakeLock(true);
 
   // sync bpm to whatever the active block wants when session arrives
   useEffect(() => {
@@ -96,6 +102,7 @@ export function SessionScreen({ onComplete }) {
 
   const advance = () => {
     if (activeIdx < session.blocks.length - 1) {
+      haptics.bump();
       const ni = activeIdx + 1;
       setActiveIdx(ni);
       setBpm(session.blocks[ni].bpm || 90);
@@ -106,6 +113,7 @@ export function SessionScreen({ onComplete }) {
         setDroning(false);
       }
     } else {
+      haptics.done();
       setPlaying(false);
       Store.completeSession(session, session.duration);
       markPracticed();
@@ -115,6 +123,7 @@ export function SessionScreen({ onComplete }) {
 
   // metronome blocks: clean records bpm + bumps streak; messy records lapse.
   const finishMetronome = (clean) => {
+    if (clean) haptics.success(); else haptics.tap();
     setDone((d) => ({ ...d, [block.id]: clean ? "clean" : "messy" }));
     if (block.bpm > 0) Store.recordBpm(block.drillId, bpm, !!clean);
     advance();

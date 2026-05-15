@@ -7,21 +7,23 @@ import { DRILLS } from "./content.js";
 import { todayKey } from "./theme.js";
 
 const TEMPLATES = {
-  technique:   ["warmup", "dexterity", "technique", "scales", "improv", "theory", "review"],
-  lead:        ["warmup", "scales", "technique", "improv", "improv", "theory", "review"],
-  fingerstyle: ["warmup", "dexterity", "technique", "scales", "improv", "theory", "review"],
+  technique:   ["warmup", "dexterity", "technique", "scales", "rhythm", "improv", "theory", "review"],
+  lead:        ["warmup", "scales", "technique", "bends_vibrato", "improv", "improv", "theory", "review"],
+  fingerstyle: ["warmup", "dexterity", "technique", "rhythm", "scales", "improv", "theory", "review"],
   theory:      ["warmup", "theory", "theory", "scales", "improv", "review"],
   rest:        [],
 };
 
 const WEIGHTS = {
-  warmup: 0.10,
-  dexterity: 0.13,
-  technique: 0.18,
-  scales: 0.27,
+  warmup: 0.08,
+  dexterity: 0.10,
+  technique: 0.14,
+  scales: 0.20,
+  rhythm: 0.10,
+  bends_vibrato: 0.10,
   improv: 0.18,
-  theory: 0.09,
-  review: 0.05,
+  theory: 0.07,
+  review: 0.04,
 };
 
 // deterministic RNG seeded by a string. so (today + focus) → same tape.

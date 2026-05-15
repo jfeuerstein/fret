@@ -9,6 +9,8 @@ import { Store, useStore } from "../store.js";
 import { PRACTICE_LABELS, TAG_LABELS, TAG_PRACTICE, generateDeck } from "../quiz/cards.js";
 import { deckStats, newCard, pickQueue, review } from "../quiz/srs.js";
 import { Btn, Header, Mini, Section } from "../components/atoms.jsx";
+import { Confirm } from "../components/modal.jsx";
+import { haptics } from "../haptics.js";
 import { baseFont, c, screenStyle } from "../theme.js";
 
 const CHIP = (active, accent) => ({
@@ -34,6 +36,7 @@ export function QuizScreen() {
   const [practice, setPractice] = useState("all");
   const [tag, setTag] = useState("all");
   const [mode, setMode] = useState("menu");
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const practiceDeck = useMemo(() => (
     practice === "all"
@@ -103,7 +106,17 @@ export function QuizScreen() {
       </div>
 
       <Section title="CATEGORY">
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        <div style={{
+          display: "flex",
+          gap: 6,
+          overflowX: "auto",
+          paddingBottom: 4,
+          marginLeft: -16,
+          marginRight: -16,
+          paddingLeft: 16,
+          paddingRight: 16,
+          WebkitOverflowScrolling: "touch",
+        }}>
           <button onClick={() => setTag("all")} style={CHIP(effectiveTag === "all", c.amber)}>
             all · {practiceDeck.length}
           </button>
@@ -146,12 +159,20 @@ export function QuizScreen() {
       </Section>
 
       <div style={{ marginTop: 18 }}>
-        <Btn size="sm" variant="danger" onClick={() => {
-          if (confirm("reset all quiz progress?")) Store.resetQuiz();
-        }}>
+        <Btn size="sm" variant="danger" onClick={() => setConfirmReset(true)}>
           ↺ reset progress
         </Btn>
       </div>
+
+      <Confirm
+        open={confirmReset}
+        title="reset all quiz progress?"
+        body="every card goes back to fresh. your routine + history stays."
+        confirmLabel="yes, reset"
+        destructive
+        onCancel={() => setConfirmReset(false)}
+        onConfirm={() => { Store.resetQuiz(); setConfirmReset(false); }}
+      />
     </div>
   );
 }
@@ -175,6 +196,7 @@ function QuizPlayer({ deck, onExit }) {
   );
 
   const grade = (g) => {
+    if (g === "again") haptics.fail(); else haptics.success();
     const next = review(progress[card.id] || newCard(), g);
     Store.updateQuizCard(card.id, next);
     setTally((t) => ({
@@ -252,7 +274,7 @@ function QuizPlayer({ deck, onExit }) {
 
 function McChoices({ choices, answer, picked, onPick }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
       {choices.map((opt) => {
         const isPicked = picked === opt;
         const isAns = opt === answer;
@@ -260,10 +282,15 @@ function McChoices({ choices, answer, picked, onPick }) {
         return (
           <button
             key={opt}
-            onClick={() => !picked && onPick(opt)}
+            onClick={() => {
+              if (picked) return;
+              haptics.tap();
+              onPick(opt);
+            }}
             disabled={!!picked}
             style={{
-              padding: "16px 10px",
+              padding: "22px 10px",
+              minHeight: 64,
               background:
                 !showColor ? "transparent"
                 : isAns ? c.green
@@ -278,8 +305,10 @@ function McChoices({ choices, answer, picked, onPick }) {
               }`,
               font: "inherit",
               fontFamily: baseFont,
-              fontSize: 16,
+              fontSize: 18,
               cursor: picked ? "default" : "pointer",
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
             }}
           >
             {opt}

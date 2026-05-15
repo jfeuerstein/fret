@@ -6,6 +6,7 @@ import { generateWeek } from "../generator.js";
 import { usePush } from "../usePush.js";
 import { isSyncEnabled } from "../sync.js";
 import { Btn, Header, Section } from "../components/atoms.jsx";
+import { Confirm } from "../components/modal.jsx";
 import { c, screenStyle } from "../theme.js";
 
 export function SettingsScreen() {
@@ -15,6 +16,7 @@ export function SettingsScreen() {
   const push = usePush();
   const [pushErr, setPushErr] = useState(null);
   const [syncOn, setSyncOn] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   useEffect(() => { setSyncOn(isSyncEnabled()); }, []);
 
@@ -78,15 +80,20 @@ export function SettingsScreen() {
       </Section>
 
       <Section title="DANGER ZONE" mt={22}>
-        <Btn size="sm" variant="danger" onClick={() => {
-          if (confirm("wipe everything? local data gone.")) {
-            Store.reset();
-            location.reload();
-          }
-        }}>
+        <Btn size="sm" variant="danger" onClick={() => setConfirmReset(true)}>
           ↺ reset everything
         </Btn>
       </Section>
+
+      <Confirm
+        open={confirmReset}
+        title="wipe everything?"
+        body="profile, week, history, journal, quiz progress — all gone. cloud sync (if enabled) will overwrite from the empty local state on next change."
+        confirmLabel="yes, wipe it"
+        destructive
+        onCancel={() => setConfirmReset(false)}
+        onConfirm={() => { Store.reset(); location.reload(); }}
+      />
     </div>
   );
 }

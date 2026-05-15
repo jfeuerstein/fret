@@ -16,7 +16,9 @@ export function Btn({
     danger:  { bg: "transparent", fg: c.red,   br: c.red,    hbg: c.red,   hfg: c.bg },
   };
   const v = variants[variant];
-  const pad = size === "lg" ? "16px 18px" : size === "sm" ? "8px 10px" : "12px 14px";
+  // sizes are tuned for fingers, not cursors. md ≥ 44px tall (apple's
+  // recommended minimum), lg ≥ 56px, sm ≥ 36px.
+  const pad = size === "lg" ? "18px 20px" : size === "sm" ? "10px 12px" : "14px 16px";
   return (
     <button
       onClick={disabled ? undefined : onClick}
@@ -30,7 +32,7 @@ export function Btn({
         padding: pad,
         font: "inherit",
         fontFamily: baseFont,
-        fontSize: size === "lg" ? 14 : size === "sm" ? 11 : 13,
+        fontSize: size === "lg" ? 15 : size === "sm" ? 12 : 14,
         letterSpacing: 1.5,
         textTransform: "uppercase",
         width: full ? "100%" : "auto",
@@ -38,6 +40,8 @@ export function Btn({
         opacity: disabled ? 0.5 : 1,
         borderRadius: 0,
         transition: "all 0.12s",
+        WebkitTapHighlightColor: "transparent",
+        touchAction: "manipulation",
         ...style,
       }}
     >
@@ -126,22 +130,26 @@ export const knobBtn = {
   background: "transparent",
   color: c.fg,
   border: `1px solid ${c.border}`,
-  padding: "8px 0",
+  padding: "14px 0",
   font: "inherit",
   fontFamily: baseFont,
-  fontSize: 13,
+  fontSize: 15,
   letterSpacing: 1,
   cursor: "pointer",
+  WebkitTapHighlightColor: "transparent",
+  touchAction: "manipulation",
 };
 
 export const transport = {
   background: "transparent",
   color: c.fg,
   border: `1px solid ${c.border}`,
-  padding: "14px 0",
+  padding: "20px 0",
   font: "inherit",
   fontFamily: baseFont,
-  fontSize: 16,
+  fontSize: 22,
   cursor: "pointer",
   letterSpacing: 2,
+  WebkitTapHighlightColor: "transparent",
+  touchAction: "manipulation",
 };

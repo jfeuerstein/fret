@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BACKING, CHORDS, TABS } from "../content.js";
 import { drone } from "../audio.js";
 import { Btn, Header } from "../components/atoms.jsx";
+import { Modal } from "../components/modal.jsx";
 import { ChordDiagram } from "../components/wireframe.jsx";
 import { baseFont, c, screenStyle } from "../theme.js";
 
@@ -24,13 +25,16 @@ export function LibraryScreen() {
               background: tab === t ? c.fg : "transparent",
               color: tab === t ? c.bg : c.fg,
               border: `1px solid ${tab === t ? c.fg : c.border}`,
-              padding: "10px 0",
+              padding: "14px 0",
+              minHeight: 48,
               font: "inherit",
               fontFamily: baseFont,
-              fontSize: 12,
+              fontSize: 13,
               letterSpacing: 2,
               textTransform: "uppercase",
               cursor: "pointer",
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
             }}
           >
             {t}
@@ -46,24 +50,44 @@ export function LibraryScreen() {
 }
 
 function ChordsTab() {
+  const [zoom, setZoom] = useState(null);
   return (
     <>
       <div style={{ color: c.muted, fontSize: 11, marginBottom: 12, lineHeight: 1.5 }}>
-        the staples.
+        tap any chord to zoom.
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
         {Object.values(CHORDS).map((ch) => (
-          <div key={ch.name} style={{
-            border: `1px solid ${c.border}`,
-            padding: 10,
-            display: "flex",
-            justifyContent: "center",
-            background: c.panel,
-          }}>
+          <button
+            key={ch.name}
+            onClick={() => setZoom(ch)}
+            style={{
+              border: `1px solid ${c.border}`,
+              padding: 10,
+              display: "flex",
+              justifyContent: "center",
+              background: c.panel,
+              cursor: "pointer",
+              minHeight: 110,
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
+            }}
+          >
             <ChordDiagram chord={ch} size="md" />
-          </div>
+          </button>
         ))}
       </div>
+
+      <Modal open={!!zoom} onClose={() => setZoom(null)}>
+        {zoom && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+            <ChordDiagram chord={zoom} size="lg" />
+            <div style={{ color: c.muted, fontSize: 11, letterSpacing: 1 }}>
+              tap outside to close
+            </div>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }

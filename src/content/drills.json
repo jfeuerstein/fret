@@ -2,34 +2,85 @@
   "warmup": [
     { "id": "chromatic_1234", "label": "warm-up", "drill": "chromatic 1-2-3-4 ladder", "tab": "chromatic", "detail": "all 6 strings, alternate picking. clean transitions, no buzz.", "baseBpm": 60 },
     { "id": "spider_1324", "label": "warm-up", "drill": "spider 1-3-2-4", "tab": "spider", "detail": "each finger lifts only when needed.", "baseBpm": 65 },
-    { "id": "string_skip", "label": "warm-up", "drill": "string-skip chromatic", "tab": "chromatic", "detail": "skip a string between every note. clean muting.", "baseBpm": 55 }
+    { "id": "string_skip", "label": "warm-up", "drill": "string-skip chromatic", "tab": "chromatic", "detail": "skip a string between every note. clean muting.", "baseBpm": 55 },
+    { "id": "open_chord_changes", "label": "warm-up", "drill": "G → C → D → Em loop", "detail": "smooth transitions, every change on the down-beat.", "baseBpm": 70 },
+    { "id": "finger_stretch", "label": "warm-up", "drill": "finger stretches · 1-2 / 1-3 / 1-4", "detail": "30s each pair. low fret, easy stretch. don't crush the neck.", "baseBpm": 0 },
+    { "id": "octave_jumps", "label": "warm-up", "drill": "octave shape jumps", "detail": "6th-string root → 4th-string octave. across the neck.", "baseBpm": 80 },
+    { "id": "slide_warmup", "label": "warm-up", "drill": "slide 1-fret slurs", "detail": "each finger, each string. focus on smooth slide, no fret noise.", "baseBpm": 70 }
   ],
   "dexterity": [
     { "id": "spider_1234", "label": "finger independence", "drill": "spider walks · 1234", "tab": "spider", "detail": "1234 / 1324 / 1423 / 1432 patterns.", "baseBpm": 70 },
-    { "id": "trill_pairs", "label": "finger independence", "drill": "trill pairs (1-2, 2-3, 3-4)", "tab": null, "detail": "20s on each pair. even volume, not speed.", "baseBpm": 0 },
-    { "id": "legato_groups", "label": "finger independence", "drill": "legato groups of 4", "tab": null, "detail": "pull-offs only after the first attack.", "baseBpm": 80 }
+    { "id": "trill_pairs", "label": "finger independence", "drill": "trill pairs (1-2, 2-3, 3-4)", "detail": "20s on each pair. even volume, not speed.", "baseBpm": 0 },
+    { "id": "legato_groups", "label": "finger independence", "drill": "legato groups of 4", "detail": "pull-offs only after the first attack.", "baseBpm": 80 },
+    { "id": "hammer_pulloff", "label": "finger independence", "drill": "hammer-on / pull-off pairs", "detail": "single string, each finger combo. pluck only the first note.", "baseBpm": 75 },
+    { "id": "pinky_only", "label": "finger independence", "drill": "pinky strength · 1+4 only", "detail": "ladder using only fingers 1 and 4. ignore the others.", "baseBpm": 60 },
+    { "id": "finger_rolls", "label": "finger independence", "drill": "finger rolls across strings", "detail": "one finger across two adjacent strings, same fret.", "baseBpm": 80 }
   ],
   "technique": [
     { "id": "altpick_single", "label": "alt picking", "drill": "single-string · 16ths", "tab": "altpick", "detail": "metronome on quarters. 3 clean reps → +5 bpm.", "baseBpm": 80 },
-    { "id": "altpick_string_change", "label": "alt picking", "drill": "string change · outside", "tab": null, "detail": "two notes per string, outside picking only.", "baseBpm": 75 },
-    { "id": "economy_3nps", "label": "economy picking", "drill": "3 notes per string", "tab": null, "detail": "down-down-up across strings ascending.", "baseBpm": 70 }
+    { "id": "altpick_string_change", "label": "alt picking", "drill": "string change · outside", "detail": "two notes per string, outside picking only.", "baseBpm": 75 },
+    { "id": "economy_3nps", "label": "economy picking", "drill": "3 notes per string", "detail": "down-down-up across strings ascending.", "baseBpm": 70 },
+    { "id": "tremolo", "label": "tremolo", "drill": "tremolo picking · single note", "detail": "fast 16ths on one note. relaxed wrist.", "baseBpm": 100 },
+    { "id": "palm_mute_chugs", "label": "palm muting", "drill": "8th-note palm-muted chugs", "tab": "palm_chugs", "detail": "low E open. tight pocket, even tone.", "baseBpm": 100 },
+    { "id": "hybrid_pick", "label": "hybrid picking", "drill": "pick + middle finger", "detail": "pick the 6th, pluck the 4th. work down to 5+3, 4+2.", "baseBpm": 70 },
+    { "id": "string_crossing", "label": "string crossing", "drill": "2-note-per-string crossing", "detail": "down-up across all 6 strings, ascending and descending.", "baseBpm": 75 },
+    { "id": "raking", "label": "raking", "drill": "rake practice (muted strings)", "detail": "one motion across 3 muted strings into a target note.", "baseBpm": 80 }
   ],
   "scales": [
     { "id": "em_pent_box1", "label": "scales", "drill": "em pent. box 1", "tab": "em_pent_box1", "detail": "asc + desc. say the root each time you hit it.", "baseBpm": 90 },
-    { "id": "em_pent_box2", "label": "scales", "drill": "em pent. box 2", "tab": "em_pent_box1", "detail": "box 2 only. clean position shifts.", "baseBpm": 85 },
+    { "id": "em_pent_box2", "label": "scales", "drill": "em pent. box 2", "tab": "em_pent_box2", "detail": "frets 2-5. clean position shifts.", "baseBpm": 85 },
+    { "id": "em_pent_box3", "label": "scales", "drill": "em pent. box 3", "tab": "em_pent_box3", "detail": "frets 5-7. anchor finger on 2nd-string fret 5.", "baseBpm": 85 },
+    { "id": "em_pent_box4", "label": "scales", "drill": "em pent. box 4", "tab": "em_pent_box4", "detail": "frets 7-9. roots on 5-7 and 3-9.", "baseBpm": 85 },
+    { "id": "em_pent_box5", "label": "scales", "drill": "em pent. box 5", "tab": "em_pent_box5", "detail": "frets 9-12. ends where box 1 begins an octave up.", "baseBpm": 85 },
     { "id": "em_pent_connect", "label": "scales", "drill": "connect boxes 1 + 2", "tab": "em_pent_box1", "detail": "string by string. find every shared note.", "baseBpm": 80 },
-    { "id": "em_pent_full", "label": "scales", "drill": "all 5 boxes, slow", "tab": "em_pent_box1", "detail": "one minute per box.", "baseBpm": 70 }
+    { "id": "em_pent_full", "label": "scales", "drill": "all 5 boxes, slow", "detail": "one minute per box, top to bottom of the neck.", "baseBpm": 70 },
+    { "id": "g_major_box", "label": "scales", "drill": "G major scale (3-notes-per-string)", "tab": "g_major_3nps", "detail": "starts 6th-string fret 3. clean position shifts.", "baseBpm": 80 },
+    { "id": "a_minor_box", "label": "scales", "drill": "A natural minor box 1", "tab": "a_minor_box1", "detail": "starts 6th-string fret 5. relative to C major.", "baseBpm": 80 },
+    { "id": "a_blues", "label": "scales", "drill": "A blues scale (with b5)", "tab": "a_blues", "detail": "minor pent + the b5. lean on the b5 sparingly.", "baseBpm": 90 },
+    { "id": "horizontal_a", "label": "scales", "drill": "A minor pent across one string", "detail": "all positions on the 5th string only. trains the neck.", "baseBpm": 70 },
+    { "id": "arpeggio_em", "label": "arpeggios", "drill": "Em arpeggio (3-string sweep)", "tab": "em_arp_3string", "detail": "down-down-down, then pull-off back. clean note separation.", "baseBpm": 70 }
+  ],
+  "rhythm": [
+    { "id": "rhythm_8ths_down", "label": "rhythm", "drill": "down-strum 8ths · single chord", "detail": "Em. metronome on 1+2+3+4. focus on consistency.", "baseBpm": 90 },
+    { "id": "rhythm_du_8ths", "label": "rhythm", "drill": "down-up 8ths", "detail": "alternating strokes. wrist motion, not arm.", "baseBpm": 90 },
+    { "id": "rhythm_16ths", "label": "rhythm", "drill": "16th-note strum · D-D-U-U-D-U", "detail": "common pop pattern. anchor with index on the off-beats.", "baseBpm": 80 },
+    { "id": "rhythm_syncopation", "label": "rhythm", "drill": "syncopated · accent the &", "detail": "8ths but accent the off-beats only. opposite of natural.", "baseBpm": 90 },
+    { "id": "rhythm_shuffle", "label": "rhythm", "drill": "shuffle 8ths (long-short)", "detail": "feel triplets but only play the 1st and 3rd. blues feel.", "baseBpm": 100 },
+    { "id": "rhythm_triplets", "label": "rhythm", "drill": "triplet strum (1-2-3 / 1-2-3)", "detail": "tap your foot on the quarter. all three strokes count.", "baseBpm": 90 },
+    { "id": "rhythm_funk_16ths", "label": "rhythm", "drill": "funk 16th muting", "detail": "constant 16ths down-up. let chord ring on accents only.", "baseBpm": 85 }
+  ],
+  "bends_vibrato": [
+    { "id": "bend_half", "label": "bending", "drill": "half-step bends (3rd string fret 7)", "detail": "bend until pitch matches fret 8. release controlled.", "baseBpm": 0 },
+    { "id": "bend_whole", "label": "bending", "drill": "whole-step bends (3rd string fret 7)", "detail": "bend to match fret 9. support with 2nd + 3rd fingers.", "baseBpm": 0 },
+    { "id": "bend_to_pitch", "label": "bending", "drill": "target-pitch bending", "detail": "play target fret first, then bend up to it from below. close your eyes.", "baseBpm": 0 },
+    { "id": "vibrato_slow", "label": "vibrato", "drill": "slow, wide vibrato · 4 beats", "detail": "1 push per beat. anchor the wrist, finger as a pivot.", "baseBpm": 60 },
+    { "id": "vibrato_speeds", "label": "vibrato", "drill": "3 vibrato speeds", "detail": "slow / medium / fast. pick a different note for each.", "baseBpm": 0 },
+    { "id": "pre_bend", "label": "bending", "drill": "pre-bend and release", "detail": "bend before plucking, then pluck and release down to pitch.", "baseBpm": 0 }
   ],
   "improv": [
-    { "id": "improv_em_groove", "label": "improv", "drill": "noodle · em groove", "tab": null, "backing": "em_groove", "detail": "boxes 1+2 only. 1 bend + 1 slide / minute.", "baseBpm": 100 },
-    { "id": "improv_am_slow", "label": "improv", "drill": "noodle · am slow burn", "tab": null, "backing": "am_slow", "detail": "long phrases. leave space.", "baseBpm": 80 },
-    { "id": "improv_blues", "label": "improv", "drill": "e blues shuffle", "tab": null, "backing": "e_blues", "detail": "minor pent over major chords. lean on b3 → 3.", "baseBpm": 90 }
+    { "id": "improv_em_groove", "label": "improv", "drill": "noodle · em groove", "backing": "em_groove", "detail": "boxes 1+2 only. 1 bend + 1 slide / minute.", "baseBpm": 100 },
+    { "id": "improv_am_slow", "label": "improv", "drill": "noodle · am slow burn", "backing": "am_slow", "detail": "long phrases. leave space.", "baseBpm": 80 },
+    { "id": "improv_blues", "label": "improv", "drill": "e blues shuffle", "backing": "e_blues", "detail": "minor pent over major chords. lean on b3 → 3.", "baseBpm": 90 },
+    { "id": "improv_funk_e", "label": "improv", "drill": "funk vamp · e7 / a7", "backing": "funk_e", "detail": "16th-note phrasing, lots of muting between notes.", "baseBpm": 100 },
+    { "id": "improv_jazz_iiVI", "label": "improv", "drill": "jazz ii-V-I in C", "backing": "jazz_ii_v_i", "detail": "Dm7 → G7 → Cmaj7. resolve every phrase to a chord tone.", "baseBpm": 110 },
+    { "id": "improv_dorian_d", "label": "improv", "drill": "D dorian vamp", "backing": "dorian_d", "detail": "Dm7 → G7. the natural 6 (B) is the magic note.", "baseBpm": 90 },
+    { "id": "improv_country_g", "label": "improv", "drill": "country shuffle in G", "backing": "country_g", "detail": "major pent. lean on the 3rd of every chord.", "baseBpm": 110 },
+    { "id": "improv_pop_c", "label": "improv", "drill": "I-V-vi-IV in C", "backing": "pop_c", "detail": "C major or A minor pent. resolve to the C and Am chord tones.", "baseBpm": 95 },
+    { "id": "improv_call_response", "label": "improv", "drill": "trade 4s with the metronome", "detail": "play 4 bars, rest 4 bars, repeat. forces phrasing.", "baseBpm": 90 },
+    { "id": "improv_one_lick", "label": "improv", "drill": "one lick, 5 ways", "detail": "pick a 4-note phrase. play it on 5 different parts of the neck.", "baseBpm": 80 }
   ],
   "theory": [
-    { "id": "th_quiz", "label": "theory micro", "drill": "quiz drill — barre / intervals / functions", "kind": "quiz", "detail": "5 cards from the spaced-rep deck. due cards first.", "baseBpm": 0 },
-    { "id": "th_caged", "label": "theory micro", "drill": "CAGED system, intro", "detail": "every chord shape lives in 5 places.", "baseBpm": 0 }
+    { "id": "th_quiz", "label": "theory micro", "drill": "quiz drill — 5 cards", "kind": "quiz", "detail": "5 cards from the spaced-rep deck. due cards first.", "baseBpm": 0 },
+    { "id": "th_caged", "label": "theory micro", "drill": "CAGED — name the shapes", "detail": "say C-A-G-E-D out loud. point to each shape on a fretboard.", "baseBpm": 0 },
+    { "id": "th_intervals", "label": "theory micro", "drill": "interval recall · 5 random", "detail": "call out 5 intervals (m3, P5, etc.) and find them on the neck.", "baseBpm": 0 },
+    { "id": "th_progression", "label": "theory micro", "drill": "build I-V-vi-IV in 3 keys", "detail": "C, G, D. write down each chord first.", "baseBpm": 0 },
+    { "id": "th_circle", "label": "theory micro", "drill": "circle of fifths (out loud)", "detail": "C → G → D → A → E → B → F# → C# → G# → D# → A# → F → C.", "baseBpm": 0 },
+    { "id": "th_relative", "label": "theory micro", "drill": "relative minor of 5 random keys", "detail": "go down a minor 3rd. C→Am, G→Em, etc.", "baseBpm": 0 }
   ],
   "review": [
-    { "id": "rv_log", "label": "review + log", "drill": "one thing clicked, one didn't", "detail": "two sentences in the journal.", "baseBpm": 0 }
+    { "id": "rv_log", "label": "review + log", "drill": "one thing clicked, one didn't", "detail": "two sentences in the journal.", "baseBpm": 0 },
+    { "id": "rv_bpm", "label": "review + log", "drill": "log peak BPM today", "detail": "for the drill you cared most about. write the number down.", "baseBpm": 0 },
+    { "id": "rv_one_word", "label": "review + log", "drill": "one-word session mood", "detail": "tap the mood button in the journal. that's the whole drill.", "baseBpm": 0 },
+    { "id": "rv_proud", "label": "review + log", "drill": "name one thing you're proud of", "detail": "one sentence. the smaller the better.", "baseBpm": 0 }
   ]
 }

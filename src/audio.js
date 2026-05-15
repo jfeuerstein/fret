@@ -198,23 +198,38 @@ export const drone = (() => {
     B: 493.88,
   };
   const chordIntervals = {
-    maj: [0, 4, 7],
-    min: [0, 3, 7],
-    5: [0, 7],
-    7: [0, 4, 7, 10],
-    m7: [0, 3, 7, 10],
+    maj:   [0, 4, 7],
+    min:   [0, 3, 7],
+    "5":   [0, 7],
+    "7":   [0, 4, 7, 10],
+    m7:    [0, 3, 7, 10],
+    maj7:  [0, 4, 7, 11],
+    sus2:  [0, 2, 7],
+    sus4:  [0, 5, 7],
+    dim:   [0, 3, 6],
+    add9:  [0, 4, 7, 14],
+    m9:    [0, 3, 7, 10, 14],
   };
 
+  // turn flat-named roots into sharp equivalents
+  const FLAT_TO_SHARP = { Bb: "A#", Db: "C#", Eb: "D#", Gb: "F#", Ab: "G#", Cb: "B", Fb: "E" };
+
   function parseChord(name) {
-    const m = name.match(/^([A-G][#b]?)(.*)$/);
+    // strip slash bass — we don't voice it, just treat as the root chord
+    const slashIdx = name.indexOf("/");
+    const head = slashIdx >= 0 ? name.slice(0, slashIdx) : name;
+    const m = head.match(/^([A-G][#b]?)(.*)$/);
     if (!m) return null;
-    const root = m[1].replace("b", "#");
+    const root = FLAT_TO_SHARP[m[1]] || m[1];
     const tail = m[2];
     let qual = "maj";
-    if (tail === "m") qual = "min";
-    else if (tail === "7") qual = "7";
-    else if (tail === "m7") qual = "m7";
-    else if (tail === "5") qual = "5";
+    if (tail === "")        qual = "maj";
+    else if (tail === "m")    qual = "min";
+    else if (tail === "min")  qual = "min";
+    else if (tail === "M")    qual = "maj";
+    else if (tail === "maj")  qual = "maj";
+    else if (chordIntervals[tail]) qual = tail;
+    else if (tail.startsWith("m") && chordIntervals[tail]) qual = tail;
     const f = noteFreqs[root];
     if (!f) return null;
     return {

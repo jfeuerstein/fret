@@ -35,6 +35,12 @@ export function Shell() {
     );
   }, [profile]);
 
+  // when you tap a different tab, you almost never want to land where the
+  // last screen left off scrolling. snap to top.
+  useEffect(() => {
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+  }, [tab]);
+
   let screen;
   switch (tab) {
     case "session": screen = <SessionScreen onComplete={() => setTab("home")} />; break;
