@@ -4,15 +4,17 @@
 // nav via bottom tab bar
 
 import { useState, useEffect, useRef } from "react";
-import { Store } from "../store.js";
+import { Store, useStore } from "../store.js";
 import {
   CHORDS,
   TABS,
   BACKING,
   GUITAR_STRINGS,
+  fmtTime,
+  freqToNote,
 } from "../content.js";
 import { metronome, tuner, drone } from "../audio.js";
-import { fmtTime, freqToNote } from "../content.js";
+import { generateSession } from "../generator.js";
 
 const c = {
   bg: "#0a0a0a",
@@ -170,8 +172,27 @@ function Section({ title, right, children, mt = 18 }) {
 
 // ─── home / today ─────────────────────────────────────────────
 function HomeScreen({ goSession, goLibrary }) {
-  const t = window.TODAY,
-    s = window.STATS;
+  const profile = useStore((s) => s.profile);
+  const history = useStore((s) => s.history);
+  const [t, setT] = useState(null);
+
+  useEffect(() => {
+    if (!t && profile) {
+      setT(
+        generateSession({
+          focus: "technique", // or derive from week, see below
+          sessionLength: profile.sessionLength,
+          history,
+        }),
+      );
+    }
+  }, [t, profile, history]);
+
+  if (!t) return null;
+  const streak = useStore((s) => s.streak);
+  const lastSession = useStore(
+    (s) => s.history.sessions[0],
+  );
   const [hover, setHover] = useState(false);
 
   return (
@@ -432,11 +453,24 @@ function HomeScreen({ goSession, goLibrary }) {
 
 // ─── session ──────────────────────────────────────────────────
 function SessionScreen() {
-  const t = window.TODAY;
-  const [done, setDone] = useState({
-    warmup: true,
-    dexterity: true,
-  });
+  const profile = useStore((s) => s.profile);
+  const history = useStore((s) => s.history);
+  const [t, setT] = useState(null);
+
+  useEffect(() => {
+    if (!t && profile) {
+      setT(
+        generateSession({
+          focus: "technique", // or derive from week, see below
+          sessionLength: profile.sessionLength,
+          history,
+        }),
+      );
+    }
+  }, [t, profile, history]);
+
+  if (!t) return null;
+  const [done, setDone] = useState({});
   const [activeIdx, setActiveIdx] = useState(2);
   const [bpm, setBpm] = useState(t.blocks[2].bpm);
   const [playing, setPlaying] = useState(false);
@@ -1067,8 +1101,11 @@ function Reels({ size = 50, spinning = true }) {
 
 // ─── weekly ───────────────────────────────────────────────────
 function WeeklyScreen() {
-  const w = window.WEEK,
-    s = window.STATS;
+  const w = useStore((s) => s.week) || [];
+  const streak = useStore((s) => s.streak);
+  const lastSession = useStore(
+    (s) => s.history.sessions[0],
+  );
   const [selected, setSelected] = useState(5);
   const sel = w[selected];
   const doneCount = w.filter(
@@ -2030,6 +2067,21 @@ function TabBar({ tab, setTab }) {
 // ─── app shell ────────────────────────────────────────────────
 function TapeApp() {
   const [tab, setTab] = useState("home");
+  const profile = useStore((s) => s.profile);
+  const history = useStore((s) => s.history);
+  const [today, setToday] = useState(null);
+
+  useEffect(() => {
+    if (profile && !today) {
+      setToday(
+        generateSession({
+          focus: "technique",
+          sessionLength: profile.sessionLength,
+          history,
+        }),
+      );
+    }
+  }, [profile, history, today]);
   const [storeState, setStoreState] = useState(
     Store ? Store.get() : null,
   );
