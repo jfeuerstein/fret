@@ -1,26 +1,28 @@
-// App.jsx — top-level shell. gates on the user profile, then renders
-// the full tape app. push opt-in lives inside settings for now.
+// App.jsx — top-level shell. gates on profile, then renders the tape app.
+// initSync() is fire-and-forget; sync layer no-ops without env vars.
 
+import { useEffect } from "react";
 import { useStore } from "./store.js";
-import { TapeApp } from "./components/tape.jsx";
-import { Onboarding } from "./components/screens.jsx";
-
-const c = { bg: "#0a0a0a", fg: "#e0e0e0" };
+import { Onboarding, Shell } from "./screens/index.js";
+import { initSync } from "./sync.js";
+import { c } from "./theme.js";
 
 export function App() {
   const profile = useStore((s) => s.profile);
 
+  useEffect(() => {
+    initSync();
+  }, []);
+
   return (
-    <div
-      style={{
-        maxWidth: 460,
-        margin: "0 auto",
-        minHeight: "100vh",
-        background: c.bg,
-        color: c.fg,
-      }}
-    >
-      {!profile ? <Onboarding /> : <TapeApp />}
+    <div style={{
+      maxWidth: 460,
+      margin: "0 auto",
+      minHeight: "100vh",
+      background: c.bg,
+      color: c.fg,
+    }}>
+      {!profile ? <Onboarding /> : <Shell />}
     </div>
   );
 }

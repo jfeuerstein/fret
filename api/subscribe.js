@@ -1,40 +1,19 @@
 // /api/subscribe — store/remove a push subscription.
-// vercel serverless function. uses @vercel/kv for persistence.
 
 import { kv } from "@vercel/kv";
-
-const KEY_PREFIX = "sub:";
-
-async function readJson(req) {
-  if (req.body && typeof req.body === "object") return req.body;
-  if (typeof req.body === "string") {
-    try { return JSON.parse(req.body); } catch { return {}; }
-  }
-  let raw = "";
-  for await (const chunk of req) raw += chunk;
-  if (!raw) return {};
-  try { return JSON.parse(raw); } catch { return {}; }
-}
-
-function subKey(endpoint) {
-  // hash the endpoint into a stable id so two devices = two records
-  let h = 5381;
-  for (let i = 0; i < endpoint.length; i++) {
-    h = ((h << 5) + h) ^ endpoint.charCodeAt(i);
-  }
-  return `${KEY_PREFIX}${(h >>> 0).toString(36)}`;
-}
+import { readJson, subKey } from "./_lib.js";
 
 export default async function handler(req, res) {
   try {
     if (req.method === "POST") {
-      const { subscription } = await readJson(req);
+      const { subscription, clientId } = await readJson(req);
       if (!subscription?.endpoint) {
         return res.status(400).json({ error: "missing subscription" });
       }
       const key = subKey(subscription.endpoint);
       await kv.hset(key, {
         endpoint: subscription.endpoint,
+        clientId: clientId || "",
         data: JSON.stringify(subscription),
         lastSeen: Date.now(),
       });

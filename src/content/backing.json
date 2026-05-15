@@ -1,0 +1,23 @@
+{
+  "em_groove": {
+    "name": "em groove · 100bpm",
+    "key": "em",
+    "bpm": 100,
+    "chords": ["Em", "G", "D", "Am"],
+    "description": "looping i-bIII-bVII-iv. classic minor pent. playground."
+  },
+  "am_slow": {
+    "name": "am slow burn · 80bpm",
+    "key": "am",
+    "bpm": 80,
+    "chords": ["Am", "F", "C", "G"],
+    "description": "sad-boy progression. perfect for bends."
+  },
+  "e_blues": {
+    "name": "e blues shuffle · 90bpm",
+    "key": "e",
+    "bpm": 90,
+    "chords": ["E", "A", "B"],
+    "description": "standard 12-bar feel. swing the 8ths."
+  }
+}

@@ -1,237 +1,21 @@
 // generator.js — rules-based daily routine generator.
 // pure functions. no side effects, no globals.
+// session contents are seeded by (date, focus) so reloading doesn't
+// reroll your tape. drill data lives in ./content/drills.json.
 
-const DRILLS = {
-  warmup: [
-    {
-      id: "chromatic_1234",
-      label: "warm-up",
-      drill: "chromatic 1-2-3-4 ladder",
-      tab: "chromatic",
-      detail:
-        "all 6 strings, alternate picking. clean transitions, no buzz.",
-      baseBpm: 60,
-    },
-    {
-      id: "spider_1324",
-      label: "warm-up",
-      drill: "spider 1-3-2-4",
-      tab: "spider",
-      detail: "each finger lifts only when needed.",
-      baseBpm: 65,
-    },
-    {
-      id: "string_skip",
-      label: "warm-up",
-      drill: "string-skip chromatic",
-      tab: "chromatic",
-      detail:
-        "skip a string between every note. clean muting.",
-      baseBpm: 55,
-    },
-  ],
-  dexterity: [
-    {
-      id: "spider_1234",
-      label: "finger independence",
-      drill: "spider walks · 1234",
-      tab: "spider",
-      detail: "1234 / 1324 / 1423 / 1432 patterns.",
-      baseBpm: 70,
-    },
-    {
-      id: "trill_pairs",
-      label: "finger independence",
-      drill: "trill pairs (1-2, 2-3, 3-4)",
-      tab: null,
-      detail: "20s on each pair. even volume, not speed.",
-      baseBpm: 0,
-    },
-    {
-      id: "legato_groups",
-      label: "finger independence",
-      drill: "legato groups of 4",
-      tab: null,
-      detail: "pull-offs only after the first attack.",
-      baseBpm: 80,
-    },
-  ],
-  technique: [
-    {
-      id: "altpick_single",
-      label: "alt picking",
-      drill: "single-string · 16ths",
-      tab: "altpick",
-      detail:
-        "metronome on quarters. 3 clean reps → +5 bpm.",
-      baseBpm: 80,
-    },
-    {
-      id: "altpick_string_change",
-      label: "alt picking",
-      drill: "string change · outside",
-      tab: null,
-      detail: "two notes per string, outside picking only.",
-      baseBpm: 75,
-    },
-    {
-      id: "economy_3nps",
-      label: "economy picking",
-      drill: "3 notes per string",
-      tab: null,
-      detail: "down-down-up across strings ascending.",
-      baseBpm: 70,
-    },
-  ],
-  scales: [
-    {
-      id: "em_pent_box1",
-      label: "scales",
-      drill: "em pent. box 1",
-      tab: "em_pent_box1",
-      detail:
-        "asc + desc. say the root each time you hit it.",
-      baseBpm: 90,
-    },
-    {
-      id: "em_pent_box2",
-      label: "scales",
-      drill: "em pent. box 2",
-      tab: "em_pent_box1",
-      detail: "box 2 only. clean position shifts.",
-      baseBpm: 85,
-    },
-    {
-      id: "em_pent_connect",
-      label: "scales",
-      drill: "connect boxes 1 + 2",
-      tab: "em_pent_box1",
-      detail: "string by string. find every shared note.",
-      baseBpm: 80,
-    },
-    {
-      id: "em_pent_full",
-      label: "scales",
-      drill: "all 5 boxes, slow",
-      tab: "em_pent_box1",
-      detail: "one minute per box.",
-      baseBpm: 70,
-    },
-  ],
-  improv: [
-    {
-      id: "improv_em_groove",
-      label: "improv",
-      drill: "noodle · em groove",
-      tab: null,
-      backing: "em_groove",
-      detail: "boxes 1+2 only. 1 bend + 1 slide / minute.",
-      baseBpm: 100,
-    },
-    {
-      id: "improv_am_slow",
-      label: "improv",
-      drill: "noodle · am slow burn",
-      tab: null,
-      backing: "am_slow",
-      detail: "long phrases. leave space.",
-      baseBpm: 80,
-    },
-    {
-      id: "improv_blues",
-      label: "improv",
-      drill: "e blues shuffle",
-      tab: null,
-      backing: "e_blues",
-      detail:
-        "minor pent over major chords. lean on b3 → 3.",
-      baseBpm: 90,
-    },
-  ],
-  theory: [
-    {
-      id: "th_pent",
-      label: "theory micro",
-      drill: "why is the pentatonic 5 notes?",
-      detail:
-        "major scale minus the 4 + 7. the pent. is the safe subset.",
-      baseBpm: 0,
-    },
-    {
-      id: "th_intervals",
-      label: "theory micro",
-      drill: "name the intervals",
-      detail:
-        "minor 3rd = 3 semitones. perfect 5th = 7. octave = 12.",
-      baseBpm: 0,
-    },
-    {
-      id: "th_circle",
-      label: "theory micro",
-      drill: "circle of fifths",
-      detail: "C → G → D → A → E → B. each adds one sharp.",
-      baseBpm: 0,
-    },
-    {
-      id: "th_caged",
-      label: "theory micro",
-      drill: "CAGED system, intro",
-      detail: "every chord shape lives in 5 places.",
-      baseBpm: 0,
-    },
-  ],
-  review: [
-    {
-      id: "rv_log",
-      label: "review + log",
-      drill: "one thing clicked, one didn't",
-      detail: "two sentences in the journal.",
-      baseBpm: 0,
-    },
-  ],
-};
+import { DRILLS } from "./content.js";
+import { todayKey } from "./theme.js";
 
 const TEMPLATES = {
-  technique: [
-    "warmup",
-    "dexterity",
-    "technique",
-    "scales",
-    "improv",
-    "theory",
-    "review",
-  ],
-  lead: [
-    "warmup",
-    "scales",
-    "technique",
-    "improv",
-    "improv",
-    "theory",
-    "review",
-  ],
-  fingerstyle: [
-    "warmup",
-    "dexterity",
-    "technique",
-    "scales",
-    "improv",
-    "theory",
-    "review",
-  ],
-  theory: [
-    "warmup",
-    "theory",
-    "theory",
-    "scales",
-    "improv",
-    "review",
-  ],
-  rest: [],
+  technique:   ["warmup", "dexterity", "technique", "scales", "improv", "theory", "review"],
+  lead:        ["warmup", "scales", "technique", "improv", "improv", "theory", "review"],
+  fingerstyle: ["warmup", "dexterity", "technique", "scales", "improv", "theory", "review"],
+  theory:      ["warmup", "theory", "theory", "scales", "improv", "review"],
+  rest:        [],
 };
 
 const WEIGHTS = {
-  warmup: 0.1,
+  warmup: 0.10,
   dexterity: 0.13,
   technique: 0.18,
   scales: 0.27,
@@ -240,21 +24,30 @@ const WEIGHTS = {
   review: 0.05,
 };
 
-function pickDrill(focus, history) {
+// deterministic RNG seeded by a string. so (today + focus) → same tape.
+function seededRng(seed) {
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) h = ((h << 5) + h) ^ seed.charCodeAt(i);
+  return () => {
+    h = Math.imul(h ^ (h >>> 13), 0x5bd1e995) | 0;
+    return ((h >>> 0) % 100000) / 100000;
+  };
+}
+
+function pickDrill(focus, history, rng) {
   const pool = DRILLS[focus] || [];
   if (!pool.length) return null;
   const yesterday = history.lastDrillIds || [];
-  const fresh = pool.filter(
-    (d) => !yesterday.includes(d.id),
-  );
+  const fresh = pool.filter((d) => !yesterday.includes(d.id));
   const arr = fresh.length ? fresh : pool;
-  return arr[Math.floor(Math.random() * arr.length)];
+  return arr[Math.floor(rng() * arr.length)];
 }
 
 function adaptiveBpm(drill, history) {
   if (!drill.baseBpm) return 0;
   const last = (history.bpmByDrill || {})[drill.id];
-  if (!last) return drill.baseBpm;
+  if (!last || !last.bpm) return drill.baseBpm;
+  // if you've cleared 3 clean reps at this BPM, push +5
   return last.cleanStreak >= 3 ? last.bpm + 5 : last.bpm;
 }
 
@@ -262,20 +55,24 @@ export function generateSession({
   focus = "technique",
   sessionLength = 45,
   history = {},
+  seed = todayKey(),
 } = {}) {
   const template = TEMPLATES[focus] || TEMPLATES.technique;
   if (!template.length) return null;
 
+  const rng = seededRng(`${seed}|${focus}|${sessionLength}`);
+
   const blocks = template
     .map((kind) => {
-      const drill = pickDrill(kind, history);
+      const drill = pickDrill(kind, history, rng);
       if (!drill) return null;
       const minutes = Math.max(
         2,
         Math.round(sessionLength * (WEIGHTS[kind] || 0.1)),
       );
+      // stable id by (seed + kind + drill) — same id across reloads
       return {
-        id: `${kind}_${drill.id}_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
+        id: `${seed}_${kind}_${drill.id}`,
         kindId: kind,
         drillId: drill.id,
         kind,
@@ -284,6 +81,9 @@ export function generateSession({
         detail: drill.detail,
         tab: drill.tab || null,
         backing: drill.backing || null,
+        // a "kind" of 'quiz' tells the session screen to swap in
+        // the inline quiz card flow rather than the metronome ui.
+        cardKind: drill.kind || "metronome",
         duration: minutes,
         bpm: adaptiveBpm(drill, history),
       };
@@ -298,12 +98,10 @@ export function generateSession({
   return {
     focus,
     title: `${focus} day`,
-    subtitle: blocks
-      .slice(0, 3)
-      .map((b) => b.label)
-      .join(" · "),
+    subtitle: blocks.slice(0, 3).map((b) => b.label).join(" · "),
     duration: sessionLength,
     blocks,
+    seed,
   };
 }
 
@@ -319,31 +117,17 @@ export function generateWeek({
   sessionLength = 45,
   focuses = ["technique", "lead", "fingerstyle", "theory"],
 } = {}) {
-  const days = [
-    "mon",
-    "tue",
-    "wed",
-    "thu",
-    "fri",
-    "sat",
-    "sun",
-  ];
+  const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
   const restCount = 7 - daysPerWeek;
   const restIdx = new Set();
   if (restCount === 1) restIdx.add(2);
-  if (restCount === 2) {
-    restIdx.add(2);
-    restIdx.add(6);
-  }
-  if (restCount === 3) {
-    restIdx.add(1);
-    restIdx.add(3);
-    restIdx.add(6);
-  }
+  if (restCount === 2) { restIdx.add(2); restIdx.add(6); }
+  if (restCount === 3) { restIdx.add(1); restIdx.add(3); restIdx.add(6); }
+  if (restCount === 4) { restIdx.add(1); restIdx.add(2); restIdx.add(4); restIdx.add(6); }
 
   let fIdx = 0;
   return days.map((d, i) => {
-    if (restIdx.has(i))
+    if (restIdx.has(i)) {
       return {
         day: d,
         focus: "rest",
@@ -352,6 +136,7 @@ export function generateWeek({
         status: "rest",
         bpm: 0,
       };
+    }
     const focus = focuses[fIdx % focuses.length];
     fIdx++;
     return {
