@@ -1,8 +1,10 @@
-// screens.jsx — onboarding + journal screens
-// uses Store + Routine (generator).
+// screens.jsx — onboarding + journal screens.
+// uses Store + generator. real ES imports, no window globals.
 
-import { Store } from "../store.js";
-import { generateSession } from "../generator.js";
+import { useEffect, useState } from "react";
+import { Store, useStore } from "../store.js";
+import { generateWeek } from "../generator.js";
+import { WfHeadstock, WfOrb } from "./wireframe.jsx";
 
 const sc = {
   bg: "#0a0a0a",
@@ -19,9 +21,9 @@ const sc = {
 const sFont = '"Courier New", ui-monospace, monospace';
 
 // ─── onboarding ──────────────────────────────────────────────
-function Onboarding({ onDone }) {
-  const [step, setStep] = uS(0);
-  const [profile, setProfile] = uS({
+export function Onboarding({ onDone }) {
+  const [step, setStep] = useState(0);
+  const [profile, setProfile] = useState({
     experience: "self-taught chords",
     sessionLength: 45,
     daysPerWeek: 5,
@@ -34,34 +36,23 @@ function Onboarding({ onDone }) {
 
   const finish = () => {
     Store.setProfile(profile);
-    const week = window.Routine.generateWeek({
-      daysPerWeek: profile.daysPerWeek,
-      sessionLength: profile.sessionLength,
-      focuses: profile.focuses,
-    });
-    Store.setWeek(week);
-    onDone();
+    Store.setWeek(
+      generateWeek({
+        daysPerWeek: profile.daysPerWeek,
+        sessionLength: profile.sessionLength,
+        focuses: profile.focuses,
+      }),
+    );
+    onDone?.();
   };
 
   const steps = [
     {
       title: "welcome",
       sub: "let's set up your routine.",
-      art: (
-        <window.WfHeadstock
-          width={120}
-          height={180}
-          color={sc.dim}
-        />
-      ),
+      art: <WfHeadstock width={120} height={180} color={sc.dim} />,
       body: (
-        <div
-          style={{
-            color: sc.dim,
-            fontSize: 13,
-            lineHeight: 1.6,
-          }}
-        >
+        <div style={{ color: sc.dim, fontSize: 13, lineHeight: 1.6 }}>
           fret builds you a daily practice, gym-style. each
           day's a tape, each block a track. takes 30 seconds
           to set up.
@@ -80,9 +71,7 @@ function Onboarding({ onDone }) {
             "intermediate",
           ]}
           value={profile.experience}
-          onChange={(v) =>
-            setProfile((p) => ({ ...p, experience: v }))
-          }
+          onChange={(v) => setProfile((p) => ({ ...p, experience: v }))}
         />
       ),
     },
@@ -101,9 +90,7 @@ function Onboarding({ onDone }) {
             "just vibe",
           ]}
           value={profile.goals}
-          onChange={(v) =>
-            setProfile((p) => ({ ...p, goals: v }))
-          }
+          onChange={(v) => setProfile((p) => ({ ...p, goals: v }))}
         />
       ),
     },
@@ -112,13 +99,9 @@ function Onboarding({ onDone }) {
       sub: "minutes per practice.",
       body: (
         <Slider
-          min={15}
-          max={90}
-          step={5}
+          min={15} max={90} step={5}
           value={profile.sessionLength}
-          onChange={(v) =>
-            setProfile((p) => ({ ...p, sessionLength: v }))
-          }
+          onChange={(v) => setProfile((p) => ({ ...p, sessionLength: v }))}
           unit="min"
         />
       ),
@@ -128,13 +111,9 @@ function Onboarding({ onDone }) {
       sub: "rest days are good for you.",
       body: (
         <Slider
-          min={3}
-          max={7}
-          step={1}
+          min={3} max={7} step={1}
           value={profile.daysPerWeek}
-          onChange={(v) =>
-            setProfile((p) => ({ ...p, daysPerWeek: v }))
-          }
+          onChange={(v) => setProfile((p) => ({ ...p, daysPerWeek: v }))}
           unit="days"
         />
       ),
@@ -145,12 +124,7 @@ function Onboarding({ onDone }) {
       body: (
         <Choices
           multi
-          options={[
-            "technique",
-            "lead",
-            "fingerstyle",
-            "theory",
-          ]}
+          options={["technique", "lead", "fingerstyle", "theory"]}
           value={profile.focuses}
           onChange={(v) =>
             setProfile((p) => ({
@@ -164,21 +138,9 @@ function Onboarding({ onDone }) {
     {
       title: "all set",
       sub: "we'll build today's tape now.",
-      art: (
-        <window.WfOrb
-          size={120}
-          color={sc.amber}
-          accent={sc.amber}
-        />
-      ),
+      art: <WfOrb size={120} color={sc.amber} accent={sc.amber} />,
       body: (
-        <div
-          style={{
-            color: sc.dim,
-            fontSize: 13,
-            lineHeight: 1.6,
-          }}
-        >
+        <div style={{ color: sc.dim, fontSize: 13, lineHeight: 1.6 }}>
           {profile.daysPerWeek} days/wk ·{" "}
           {profile.sessionLength}m sessions · cycling:{" "}
           {profile.focuses.join(" / ")}
@@ -193,7 +155,7 @@ function Onboarding({ onDone }) {
   return (
     <div
       style={{
-        padding: "74px 22px 100px",
+        padding: "44px 22px 32px",
         minHeight: "100%",
         boxSizing: "border-box",
         background: sc.bg,
@@ -203,64 +165,29 @@ function Onboarding({ onDone }) {
         flexDirection: "column",
       }}
     >
-      <div
-        style={{
-          color: sc.muted,
-          fontSize: 10,
-          letterSpacing: 3,
-          marginBottom: 4,
-        }}
-      >
-        SETUP · {String(step + 1).padStart(2, "0")}/
-        {String(steps.length).padStart(2, "0")}
+      <div style={{ color: sc.muted, fontSize: 10, letterSpacing: 3, marginBottom: 4 }}>
+        SETUP · {String(step + 1).padStart(2, "0")}/{String(steps.length).padStart(2, "0")}
       </div>
-      <div
-        style={{
-          fontSize: 24,
-          marginBottom: 4,
-          textTransform: "lowercase",
-        }}
-      >
+      <div style={{ fontSize: 24, marginBottom: 4, textTransform: "lowercase" }}>
         {cur.title}
       </div>
-      <div
-        style={{
-          color: sc.dim,
-          fontSize: 13,
-          marginBottom: 22,
-        }}
-      >
+      <div style={{ color: sc.dim, fontSize: 13, marginBottom: 22 }}>
         {cur.sub}
       </div>
 
       {cur.art && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: 24,
-          }}
-        >
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
           {cur.art}
         </div>
       )}
       <div style={{ flex: 1 }}>{cur.body}</div>
 
-      {/* progress dots */}
-      <div
-        style={{
-          display: "flex",
-          gap: 5,
-          justifyContent: "center",
-          marginBottom: 16,
-        }}
-      >
+      <div style={{ display: "flex", gap: 5, justifyContent: "center", margin: "16px 0" }}>
         {steps.map((_, i) => (
           <span
             key={i}
             style={{
-              width: 18,
-              height: 3,
+              width: 18, height: 3,
               background: i <= step ? sc.amber : sc.faint,
               transition: "background 0.2s",
             }}
@@ -270,14 +197,9 @@ function Onboarding({ onDone }) {
 
       <div style={{ display: "flex", gap: 8 }}>
         {step > 0 && (
-          <button onClick={back} style={obtnGhost}>
-            back
-          </button>
+          <button onClick={back} style={obtnGhost}>back</button>
         )}
-        <button
-          onClick={last ? finish : next}
-          style={obtnSolid}
-        >
+        <button onClick={last ? finish : next} style={obtnSolid}>
           {last ? "✓ build tape" : "next →"}
         </button>
       </div>
@@ -307,26 +229,15 @@ const obtnSolid = {
 };
 
 function Choices({ options, value, onChange, multi }) {
-  const isOn = (o) =>
-    multi ? (value || []).includes(o) : value === o;
+  const isOn = (o) => (multi ? (value || []).includes(o) : value === o);
   const tog = (o) => {
     if (multi) {
       const cur = value || [];
-      onChange(
-        cur.includes(o)
-          ? cur.filter((x) => x !== o)
-          : [...cur, o],
-      );
+      onChange(cur.includes(o) ? cur.filter((x) => x !== o) : [...cur, o]);
     } else onChange(o);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 6,
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {options.map((o) => {
         const on = isOn(o);
         return (
@@ -345,8 +256,7 @@ function Choices({ options, value, onChange, multi }) {
               cursor: "pointer",
             }}
           >
-            {on ? "[x] " : "[ ] "}
-            {o}
+            {on ? "[x] " : "[ ] "}{o}
           </button>
         );
       })}
@@ -364,49 +274,20 @@ function Slider({ min, max, step, value, onChange, unit }) {
         background: sc.panel,
       }}
     >
-      <div
-        style={{
-          fontSize: 56,
-          lineHeight: 1,
-          color: sc.amber,
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
+      <div style={{ fontSize: 56, lineHeight: 1, color: sc.amber, fontVariantNumeric: "tabular-nums" }}>
         {value}
       </div>
-      <div
-        style={{
-          color: sc.muted,
-          fontSize: 11,
-          letterSpacing: 2,
-          marginTop: 4,
-          textTransform: "uppercase",
-        }}
-      >
+      <div style={{ color: sc.muted, fontSize: 11, letterSpacing: 2, marginTop: 4, textTransform: "uppercase" }}>
         {unit}
       </div>
       <input
         type="range"
-        min={min}
-        max={max}
-        step={step}
+        min={min} max={max} step={step}
         value={value}
         onChange={(e) => onChange(+e.target.value)}
-        style={{
-          width: "100%",
-          marginTop: 16,
-          accentColor: sc.amber,
-        }}
+        style={{ width: "100%", marginTop: 16, accentColor: sc.amber }}
       />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          color: sc.muted,
-          fontSize: 10,
-          marginTop: 4,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", color: sc.muted, fontSize: 10, marginTop: 4 }}>
         <span>{min}</span>
         <span>{max}</span>
       </div>
@@ -415,12 +296,11 @@ function Slider({ min, max, step, value, onChange, unit }) {
 }
 
 // ─── journal screen ──────────────────────────────────────────
-function JournalScreen() {
-  const [state, setState] = uS(Store.get());
-  const [text, setText] = uS("");
-  const [mood, setMood] = uS(null);
+export function JournalScreen() {
+  const journal = useStore((s) => s.journal);
+  const [text, setText] = useState("");
+  const [mood, setMood] = useState(null);
 
-  uE(() => Store.subscribe(setState), []);
   const submit = () => {
     if (!text.trim()) return;
     Store.addJournal({ note: text.trim(), mood });
@@ -428,12 +308,12 @@ function JournalScreen() {
     setMood(null);
   };
 
-  const entries = state.journal || [];
+  const entries = journal || [];
 
   return (
     <div
       style={{
-        padding: "74px 16px 100px",
+        padding: "44px 16px 100px",
         minHeight: "100%",
         boxSizing: "border-box",
         background: sc.bg,
@@ -442,39 +322,14 @@ function JournalScreen() {
         fontSize: 13,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          color: sc.muted,
-          fontSize: 10,
-          letterSpacing: 3,
-          marginBottom: 14,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", color: sc.muted, fontSize: 10, letterSpacing: 3, marginBottom: 14 }}>
         <span>JOURNAL</span>
         <span>{entries.length} ENTRIES</span>
       </div>
-      <div style={{ fontSize: 22, marginBottom: 14 }}>
-        journal
-      </div>
+      <div style={{ fontSize: 22, marginBottom: 14 }}>journal</div>
 
-      <div
-        style={{
-          border: `1px solid ${sc.border}`,
-          padding: 12,
-          marginBottom: 14,
-          background: sc.panel,
-        }}
-      >
-        <div
-          style={{
-            color: sc.muted,
-            fontSize: 10,
-            letterSpacing: 2,
-            marginBottom: 8,
-          }}
-        >
+      <div style={{ border: `1px solid ${sc.border}`, padding: 12, marginBottom: 14, background: sc.panel }}>
+        <div style={{ color: sc.muted, fontSize: 10, letterSpacing: 2, marginBottom: 8 }}>
           NEW ENTRY
         </div>
         <textarea
@@ -497,22 +352,14 @@ function JournalScreen() {
             outline: "none",
           }}
         />
-        <div
-          style={{
-            display: "flex",
-            gap: 4,
-            marginTop: 8,
-            marginBottom: 8,
-          }}
-        >
+        <div style={{ display: "flex", gap: 4, marginTop: 8, marginBottom: 8 }}>
           {["rough", "meh", "solid", "fire"].map((m) => (
             <button
               key={m}
               onClick={() => setMood(m)}
               style={{
                 flex: 1,
-                background:
-                  mood === m ? sc.amber : "transparent",
+                background: mood === m ? sc.amber : "transparent",
                 color: mood === m ? sc.bg : sc.dim,
                 border: `1px solid ${mood === m ? sc.amber : sc.border}`,
                 padding: "8px 0",
@@ -547,26 +394,11 @@ function JournalScreen() {
         </button>
       </div>
 
-      <div
-        style={{
-          color: sc.muted,
-          fontSize: 10,
-          letterSpacing: 2,
-          marginBottom: 8,
-        }}
-      >
+      <div style={{ color: sc.muted, fontSize: 10, letterSpacing: 2, marginBottom: 8 }}>
         HISTORY
       </div>
       {entries.length === 0 ? (
-        <div
-          style={{
-            color: sc.muted,
-            fontSize: 12,
-            fontStyle: "italic",
-            padding: "20px 0",
-            textAlign: "center",
-          }}
-        >
+        <div style={{ color: sc.muted, fontSize: 12, fontStyle: "italic", padding: "20px 0", textAlign: "center" }}>
           no entries yet. write one after your next session.
         </div>
       ) : (
@@ -581,32 +413,14 @@ function JournalScreen() {
               fontSize: 12,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: sc.muted,
-                fontSize: 10,
-                letterSpacing: 1,
-                marginBottom: 6,
-              }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between", color: sc.muted, fontSize: 10, letterSpacing: 1, marginBottom: 6 }}>
               <span>{e.date}</span>
-              {e.mood && (
-                <span style={{ color: sc.amber }}>
-                  {e.mood}
-                </span>
-              )}
+              {e.mood && <span style={{ color: sc.amber }}>{e.mood}</span>}
             </div>
-            <div style={{ color: sc.dim, lineHeight: 1.5 }}>
-              {e.note}
-            </div>
+            <div style={{ color: sc.dim, lineHeight: 1.5 }}>{e.note}</div>
           </div>
         ))
       )}
     </div>
   );
 }
-
-window.Onboarding = Onboarding;
-window.JournalScreen = JournalScreen;
